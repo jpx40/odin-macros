@@ -189,9 +189,55 @@ parse_lines :: proc(lines: []string) -> string {
 	return strings.concatenate(out[:])
 }
 main :: proc() {
-    f := read_file("/Users/jonas/code/odin/odin-macros/test.odin")
-    lines := to_lines(f)
+    args := os.args
+
+     if len(args) != 0 {
+    dir :=os.get_current_directory()
+    file_path :string
+    file_pos : int
+    file : string
+    contains_file : bool =false
+   
+        for a,i in args {
+            if a == "--file" || a=="-file" {
+                contains_file = true
+                file_pos = i +1
+                break
+            }
+            
+        }
+
+if contains_file {
+if (len(args) -1) >= file_pos {
+    file = args[file_pos]
+// builder: strings.Builder
+
+// b,_  := strings.builder_make()
+    ext :=    filepath.long_ext(file)
+    if  ext == ".odin" {
+    if strings.contains(file,"./") {
+        w := strings.split_after(file,"./")
+        
+        file_path,_ = strings.concatenate({dir,"/",w[1]})
+    
+    } else {
+        // w := strings.split_after(file,"./")
+        file_path,_ = strings.concatenate({dir,"/",file})
+    }
+
+     lines := to_lines(file_path)
     s:=parse_lines(lines)
     
-    err := os.write_entire_file_or_err("/Users/jonas/code/odin/odin-macros/test_out.odin", transmute([]u8)s)
+    err := os.write_entire_file_or_err("/Users/jonas/code/odin/odin-macros/test_out.odin", transmute([]u8)s)  
+  }  
+}
+}
+     }
+    // for i in args {
+    // }
+    // f := read_file("/Users/jonas/code/odin/odin-macros/test.odin")
+    // lines := to_lines(f)
+    // s:=parse_lines(lines)
+    
+    // err := os.write_entire_file_or_err("/Users/jonas/code/odin/odin-macros/test_out.odin", transmute([]u8)s)
 }
